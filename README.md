@@ -1,48 +1,66 @@
 # Book to Article
 
-`book-to-article` is an agent skill for turning a book file into a faithful learning article.
+**Turn a dense nonfiction book into a faithful long-form article.**
 
-It is designed for cases where a user provides a nonfiction book, such as a PDF, EPUB, or TXT file, and wants the important argument, concepts, and examples rewritten into a standalone article. It is not meant to produce a chapter summary, book review, reading report, rating, or personal reflection.
+[简体中文](README.zh-CN.md)
 
-## What It Produces
+Book to Article is an agent skill for reading book files and rewriting the important ideas into one substantial article. It is built for readers who want to learn from a book without receiving a chapter summary, a review, a score, or a list of quotes.
 
-By default, the skill writes one substantial article to a Markdown file:
+Give it a PDF, EPUB, or TXT book. It extracts the text, reads for the book's argument, compresses repetition, preserves the author's core claims, and writes a standalone Markdown article that can replace most casual reading of the original.
+
+## Why It Exists
+
+Many nonfiction books contain valuable ideas wrapped in repeated examples, long setup, and chapter structures designed for a full reading experience. This skill keeps the learning value and removes the drag.
+
+It is especially useful for:
+
+- Social-science and practical nonfiction.
+- Books with strong concepts but repetitive examples.
+- Turning a long book into an article you can actually finish.
+- Learning the author's argument before deciding whether to read the full book.
+
+## What You Get
+
+By default, the skill writes one Markdown article:
 
 ```text
 <book-stem>.article.md
 ```
 
-The article should:
+The article is designed to:
 
-- Preserve the book's main argument and conceptual structure.
-- Compress repeated examples and long setup.
-- Rebuild the material into article form instead of following chapters mechanically.
-- Prefer paraphrase over quotation.
-- Avoid adding claims not present in the book unless clearly marked as external context or inference.
+- Stay faithful to the book's argument and conceptual structure.
+- Rebuild the material as a readable essay, not a chapter-by-chapter summary.
+- Compress repeated cases and long scene-setting.
+- Explain key concepts through the author's reasoning.
+- Avoid review-style judgments such as whether the book is worth reading.
+- Reduce formulaic prose through a dedicated style revision pass.
 
 For Chinese output, the default target length is usually 8,000-15,000 Chinese characters. For English output, it is usually 4,000-8,000 words.
 
-## Repository Contents
+## How To Use
+
+If the skill is installed in an agent's skills directory:
 
 ```text
-SKILL.md
-agents/openai.yaml
-scripts/extract_book_text.py
+Use $book-to-article to turn /path/to/book.epub into a learning article.
 ```
 
-- `SKILL.md`: The actual skill instructions an agent should follow.
-- `agents/openai.yaml`: Optional UI metadata for environments that support agent skill metadata.
-- `scripts/extract_book_text.py`: A helper script that extracts readable text from supported book files before analysis.
+If you are using this repository directly:
 
-## Text Extraction Script
+```text
+Use the skill at ./SKILL.md to turn /path/to/book.epub into a learning article.
+```
 
-The helper script supports:
+The final article is saved as Markdown, and the agent reports the output path instead of pasting the full article into chat.
 
-- `.txt`
+## Supported Inputs
+
 - `.pdf`
 - `.epub`
+- `.txt`
 
-Usage:
+The bundled extraction helper can also be used directly:
 
 ```bash
 python3 scripts/extract_book_text.py /path/to/book.epub
@@ -54,20 +72,18 @@ With an explicit output path:
 python3 scripts/extract_book_text.py /path/to/book.epub --output /tmp/book.extracted.txt
 ```
 
-The script normalizes whitespace, keeps basic page or EPUB file markers where available, and writes a UTF-8 text file. PDF extraction uses `pypdf` when available and falls back to `PyPDF2`.
+PDF extraction uses `pypdf` when available and falls back to `PyPDF2`. EPUB extraction reads the archive's HTML/XHTML content and normalizes it into plain text.
 
-## Using the Skill
-
-If this skill is installed in an agent's skills directory, invoke it as:
+## Repository Contents
 
 ```text
-Use $book-to-article to turn /path/to/book.epub into a learning article.
+SKILL.md
+agents/openai.yaml
+scripts/extract_book_text.py
+README.md
+README.zh-CN.md
 ```
 
-If using it directly from this repository, point the agent at the local skill file:
-
-```text
-Use the skill at ./SKILL.md to turn /path/to/book.epub into a learning article.
-```
-
-The skill should save the final article as Markdown and report the output path rather than pasting the full article into chat.
+- `SKILL.md`: The actual skill instructions.
+- `agents/openai.yaml`: Optional UI metadata for skill-aware environments.
+- `scripts/extract_book_text.py`: Text extraction helper for PDF, EPUB, and TXT files.
