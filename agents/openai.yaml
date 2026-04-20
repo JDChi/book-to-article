@@ -1,0 +1,4 @@
+interface:
+  display_name: "Book to Article"
+  short_description: "Turn book files into faithful learning articles, not summaries"
+  default_prompt: "Use $book-to-article to turn this book file into a faithful learning article."
